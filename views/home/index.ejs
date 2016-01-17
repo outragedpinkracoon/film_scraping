@@ -1,10 +1,22 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <title>Film Grosses</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <p><%= week1sw %></p>
-  </body>
+</head>
+
+<body>
+   <% for(var i=0; i<data.length; i++) {%>
+   <li><%= data[i].name %>
+   
+   
+   <% for(var k=0; k<data[i].dataPoints.length; k++) {%>
+   <li><%= data[i].dataPoints[k].value %></li>
+    <% } %>
+   
+   </li>   
+<% } %>
+</body>
+
 </html>
