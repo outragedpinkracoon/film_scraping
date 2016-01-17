@@ -1,9 +1,40 @@
 var express = require('express');
+var request = require('request');
+var cheerio = require('cheerio');
+var fs = require('fs');
+
 var router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/', function (req, res, next) {
+    var $ = cheerio.load(fs.readFileSync('result.html'));
+    var table = $("table")[2];
+    var tr = $(table).find("tr")[1];
+    var td = $(tr).find("td")[1];
+    var font1 = $(td).find("font")
+    var font2 = font1.find("font")[0]
+    var children = font2.children[0]
+    var data = children.data;
+    var week1sw = data, week1avatar = data;
+    var json = { week1sw: week1sw, week1avatar: week1avatar };
+    res.render('index', json);
 });
+
+
+router.get('/scrape', function (req, res, next) {
+    var url = 'http://www.boxofficemojo.com/showdowns/chart/?view=weekly&id=liberge.htm';
+    request(url, function (error, response, html) {
+        var result;
+        if (!error) {
+            fs.writeFile("result.html", html, function (err) {
+                if (err) {
+                    result = err;
+                }
+                result = "The file was saved!";
+                res.render('scrape', { result: result });
+            });
+        }
+    });
+});
+
 
 module.exports = router;
