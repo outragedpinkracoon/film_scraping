@@ -13,23 +13,26 @@ router.get('/', function (req, res, next) {
 
     var elements = $("table").eq(2).find("tr").eq(0).find("a");
     var results = []
-    
+
     elements.each(function (i, elem) {
         var model = new DisplayModel();
         model.name = $(this).text();
         results[i] = model;
     });
-    
-   elements = $("table").eq(2).find("tr").eq(2).find("td");
-   for (var i = 0; i < 5; i++) { 
-        var amount = elements.eq(i+1).find("font").eq(1).text();
-        var kvp = new KeyValuePair();
-        kvp.value = amount;
-        kvp.key = i;
-        results[i].dataPoints.push(kvp);
+
+    elements = $("table").eq(2).find("tr").eq(2).find("td");
+
+    for (var i = 2; i < 6; i++) {  
+        elements = $("table").eq(2).find("tr").eq(i).find("td");
+        for (var k = 0; k < 5; k++) {
+            var amount = elements.eq(k + 1).find("font").eq(1).text();
+            var kvp = new KeyValuePair();
+            kvp.value = amount;
+            kvp.key = k;
+            results[k].dataPoints.push(kvp);
+        }
     }
-   
-    
+
     var json = { data: results };
     res.render('home/index', json);
 });
