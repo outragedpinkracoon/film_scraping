@@ -2,6 +2,7 @@ var express = require('express');
 var request = require('request');
 var cheerio = require('cheerio');
 var fs = require('fs');
+var FileUtils = require('custom/fileUtils');
 
 var router = express.Router();
 
@@ -23,18 +24,12 @@ router.get('/', function (req, res, next) {
 router.get('/scrape', function (req, res, next) {
     var url = 'http://www.boxofficemojo.com/showdowns/chart/?view=weekly&id=liberge.htm';
     request(url, function (error, response, html) {
-        var result;
         if (!error) {
-            fs.writeFile("result.html", html, function (err) {
-                if (err) {
-                    result = err;
-                }
-                result = "The file was saved!";
+            new FileUtils().writeFile("result.html", html, function(result){
                 res.render('scrape', { result: result });
-            });
+            })
         }
     });
 });
-
 
 module.exports = router;
