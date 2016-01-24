@@ -2,7 +2,6 @@ var express = require('express');
 var request = require('request');
 var cheerio = require('cheerio');
 var fs = require('fs');
-var FileService = require('../lib/services/fileService');
 var DisplayModel = require('../lib/models/displayModel');
 var KeyValuePair = require('../lib/models/keyValuePair');
 
