@@ -12,6 +12,7 @@ var DataThing = function () {
     var $ = cheerio.load(fs.readFileSync('result.html'));
     this.init = function () {
         this.headers();
+        this.data();
     }
     this.headers = function () {
         var results = [];
@@ -24,15 +25,8 @@ var DataThing = function () {
         });
         return results;
     },
-    this.results = this.headers();
-}
-
-router.get('/', function (req, res, next) {
-
-    var d = new DataThing();
-    var results = d.results;
-    var $ = cheerio.load(fs.readFileSync('result.html'));
-    var elements = $("table").eq(2).find("tr").eq(2).find("td");
+    this.data = function(){
+        var elements = $("table").eq(2).find("tr").eq(2).find("td");
 
     for (var i = 2; i < 6; i++) {
         elements = $("table").eq(2).find("tr").eq(i).find("td");
@@ -41,11 +35,19 @@ router.get('/', function (req, res, next) {
             var kvp = new KeyValuePair();
             kvp.value = amount;
             kvp.key = k;
-            results[k].dataPoints.push(kvp);
+            this.results[k].dataPoints.push(kvp);
         }
     }
+    }
+    this.results = this.headers();
+}
 
-    var json = { data: results };
+router.get('/', function (req, res, next) {
+
+    var d = new DataThing();
+    d.init();
+
+    var json = { data: d.results };
     res.render('home/index', json);
 });
 
