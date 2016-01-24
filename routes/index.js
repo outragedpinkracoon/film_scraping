@@ -8,13 +8,8 @@ var KeyValuePair = require('../lib/models/keyValuePair');
 
 var router = express.Router();
 
-var Parser = function () {
-    var $ = cheerio.load(fs.readFileSync('result.html'));
-    this.init = function () {
-        this.results = this.headers();
-        this.data();
-    }
-    this.headers = function () {
+var TableHeaders = function ($) {
+    this.generate = function () {
         var results = [];
         var elements = $("table").eq(2).find("tr").eq(0).find("a");
 
@@ -24,8 +19,12 @@ var Parser = function () {
             results[i] = model;
         });
         return results;
-    },
-    this.data = function () {
+    }
+}
+
+var TableData = function ($, headers) {
+    this.generate = function () {
+        var results = headers;
         var elements = $("table").eq(2).find("tr").eq(2).find("td");
 
         for (var i = 2; i < 6; i++) {
@@ -35,11 +34,22 @@ var Parser = function () {
                 var kvp = new KeyValuePair();
                 kvp.value = amount;
                 kvp.key = k;
-                this.results[k].dataPoints.push(kvp);
+                results[k].dataPoints.push(kvp);
             }
         }
+        return results;
     }
-    this.init(); 
+}
+
+var Parser = function () {
+    var $ = cheerio.load(fs.readFileSync('result.html'));
+
+    this.init = function () {
+        var headers = new TableHeaders($).generate();
+        this.results = new TableData($, headers).generate();
+    }
+
+    this.init();
 }
 
 router.get('/', function (req, res, next) {
