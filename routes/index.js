@@ -8,11 +8,13 @@ var KeyValuePair = require('../lib/models/keyValuePair');
 
 var router = express.Router();
 
-router.get('/', function (req, res, next) {
+var DataThing = function () {
     var $ = cheerio.load(fs.readFileSync('result.html'));
-
-    var results = [];
-    var headers = function () {
+    this.init = function () {
+        this.headers();
+    }
+    this.headers = function () {
+        var results = [];
         var elements = $("table").eq(2).find("tr").eq(0).find("a");
 
         elements.each(function (i, elem) {
@@ -20,10 +22,16 @@ router.get('/', function (req, res, next) {
             model.name = $(this).text();
             results[i] = model;
         });
-    }
+        return results;
+    },
+    this.results = this.headers();
+}
 
-    headers();
+router.get('/', function (req, res, next) {
 
+    var d = new DataThing();
+    var results = d.results;
+    var $ = cheerio.load(fs.readFileSync('result.html'));
     var elements = $("table").eq(2).find("tr").eq(2).find("td");
 
     for (var i = 2; i < 6; i++) {
