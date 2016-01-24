@@ -10,7 +10,8 @@ router.get('/', function (req, res, next) {
 router.get('/data', function (req, res, next) {
 
     var parser = new Parser();
-    res.json({ data: parser.results  });
+    var results = parser.results;
+    res.json({results});
 });
 
 module.exports = router;
