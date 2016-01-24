@@ -9,20 +9,24 @@ var KeyValuePair = require('../lib/models/keyValuePair');
 var router = express.Router();
 
 router.get('/', function (req, res, next) {
-    var $ = cheerio.load(fs.readFileSync('result2.html'));
+    var $ = cheerio.load(fs.readFileSync('result.html'));
 
-    var elements = $("table").eq(2).find("tr").eq(0).find("a");
-    var results = []
+    var results = [];
+    var headers = function () {
+        var elements = $("table").eq(2).find("tr").eq(0).find("a");
 
-    elements.each(function (i, elem) {
-        var model = new DisplayModel();
-        model.name = $(this).text();
-        results[i] = model;
-    });
+        elements.each(function (i, elem) {
+            var model = new DisplayModel();
+            model.name = $(this).text();
+            results[i] = model;
+        });
+    }
 
-    elements = $("table").eq(2).find("tr").eq(2).find("td");
+    headers();
 
-    for (var i = 2; i < 6; i++) {  
+    var elements = $("table").eq(2).find("tr").eq(2).find("td");
+
+    for (var i = 2; i < 6; i++) {
         elements = $("table").eq(2).find("tr").eq(i).find("td");
         for (var k = 0; k < 5; k++) {
             var amount = elements.eq(k + 1).find("font").eq(1).text();
