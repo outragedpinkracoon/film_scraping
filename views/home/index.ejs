@@ -7,13 +7,13 @@
 </head>
 
 <body>
-   <% for(var i=0; i<data.length; i++) {%>
-   <li><%= data[i].name %>
+   <% for(var film=0; film<data.length; film++) {%>
+   <li><%= data[film].name %>
    
    
-   <% for(var k=0; k<data[i].dataPoints.length; k++) {%>
+   <% for(var point=0; point<data[film].dataPoints.length; point++) {%>
    <li>
-       <p><%= data[i].dataPoints[k].value %></p>
+       <p><%= data[film].dataPoints[point].value %></p>
    </li>
     <% } %>
    
